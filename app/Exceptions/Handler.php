@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -50,22 +52,22 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $e)
     {
 
-//        if ($e instanceof \Illuminate\Auth\AuthenticationException) {
-//            return sendError(401);
-//        }
-        if ($e instanceof ValidationException) {
+        if ($e instanceof \Illuminate\Auth\AuthenticationException) {
+            return errorResponse(401);
 
-            return response()->json($e->validator->errors(), $e->status);
         }
-//        if ($e instanceof RouteNotFoundException) {
-//            return sendError(404);
-//        }
-//        if ($e instanceof NotFoundHttpException) {
-//            return sendError(404);
-//        }
-//        if ($e) {
-//            return sendError(500, $e->getMessage(), 'خطای تفکیک نشده!');
-//        }
+        if ($e instanceof ValidationException) {
+            return errorResponse($e->status, $e->validator->errors()->toArray());
+        }
+        if ($e instanceof RouteNotFoundException) {
+            return errorResponse(404);
+        }
+        if ($e instanceof NotFoundHttpException) {
+            return errorResponse(404);
+        }
+        if ($e) {
+            return errorResponse(500, (array)$e->getMessage(), ['این بخش در حال بروزرسانی میباشد.']);
+        }
         return parent::render($request, $e);
     }
 }

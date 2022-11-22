@@ -24,8 +24,8 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|regex:/^[a-z]$/',
-            'surname' => 'required',
+            'name' => 'required|regex:/^[a-zA-Z ]+$/u',
+            'surname' => 'required|regex:/^[a-zA-Z ]+$/u',
             'username' => 'required|unique:users,username',
             'password' => 'required|string|min:6|max:64'
         ];
@@ -37,6 +37,7 @@ class RegisterRequest extends FormRequest
             'name.required' => 'نام نمیتواند خالی باشد.',
             'name.regex' => 'نام فقط شامل حروف امگلیسی و فاصله میتواند باشد.',
             'surname.required' => 'نام خانوادگی نمیتواند خالی باشد.',
+            'surname.regex' => 'نام خانوادگی فقط شامل حروف امگلیسی و فاصله میتواند باشد.',
             'username.required' => 'نام کاربری نمیتواند خالی باشد.',
             'username.unique' => 'نام کاربری نمیتواند تکراری باشد.',
             'password.required' => 'رمز نمیتواند خالی باشد.',
