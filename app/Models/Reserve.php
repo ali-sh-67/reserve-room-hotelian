@@ -24,12 +24,6 @@ class Reserve extends Model
         'to_date',
     ];
 
-    /**
-     * @param array $array
-     */
-    public static function create(array $array)
-    {
-    }
 
     /**
      * @return BelongsTo

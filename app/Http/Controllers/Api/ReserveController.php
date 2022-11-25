@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\RoomEnum;
+
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ReserveRequest;
 use App\Models\Reserve;
 use App\Models\Room;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
@@ -14,7 +16,12 @@ use Illuminate\Http\Request;
  */
 class ReserveController extends Controller
 {
-    public function reserve(Request $request, $id)
+    /**
+     * @param ReserveRequest $request
+     * @param $id
+     * @return JsonResponse
+     */
+    public function reserve(ReserveRequest $request, $id): JsonResponse
     {
         try {
             $room = Room::find($id);
@@ -44,25 +51,30 @@ class ReserveController extends Controller
         }
     }
 
-    public function history(Request $request)
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function history(Request $request): JsonResponse
     {
         try {
+            $rooms=[];
             if ($request->getQueryString() == null) {
 
-                $rooms = Room::has('reluser')->get()->append(['fromDate', 'toDate', 'price']);
+                $rooms = Room::has('reluser')->get()->append(['fromDate', 'toDate', 'price'])->toArray();
 
             } elseif ($request->query('myReserve') == 'true') {
 
                 $rooms = Room::whereHas('reluser', function ($query) use ($request) {
                     return $query->where('user_id', $request->user()->id);
-                })->get()->append(['fromDate', 'toDate', 'price']);
+                })->get()->append(['fromDate', 'toDate', 'price'])->toArray();
 
             } elseif ($request->query('type')) {
 
-                $rooms = Room::where('type', 'like', '%' . $request->query('type') . '%')->has('reluser')->get()->append(['fromDate', 'toDate', 'price']);
+                $rooms = Room::where('type', 'like', '%' . $request->query('type') . '%')->has('reluser')->get()->append(['fromDate', 'toDate', 'price'])->toArray();
             }
 
-            return successResponse($rooms->toArray(), ['اطلاعات با موفقیت ارسال شد.'], 200);
+            return successResponse($rooms, ['اطلاعات با موفقیت ارسال شد.'], 200);
 
         } catch (Exception $e) {
             return errorResponse($e->getCode(), (array)$e->getMessage());
