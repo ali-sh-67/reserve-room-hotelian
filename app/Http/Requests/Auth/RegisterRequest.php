@@ -1,9 +1,13 @@
 <?php
 
-namespace App\Http\Requests\auth;
+namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+
+/**
+ *
+ */
 class RegisterRequest extends FormRequest
 {
     /**
@@ -11,7 +15,7 @@ class RegisterRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -21,7 +25,7 @@ class RegisterRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => 'required|regex:/^[a-zA-Z ]+$/u',
@@ -31,7 +35,12 @@ class RegisterRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages(): array
     {
         return [
             'name.required' => 'نام نمیتواند خالی باشد.',

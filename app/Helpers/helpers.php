@@ -1,5 +1,16 @@
 <?php
-function successResponse(array $data, array $messages, int $statusCode, array $errors = null): \Illuminate\Http\JsonResponse
+
+use Illuminate\Http\JsonResponse;
+
+/**
+ * @param array $data
+ * @param array $messages
+ * @param int $statusCode
+ * @param array $errors
+ * @return JsonResponse
+ * @noinspection PhpFunctionNamingConventionInspection
+ */
+function successResponse(array $data, array $messages, int $statusCode, array $errors = []): JsonResponse
 {
     $structure = [
         'success' => 1,
@@ -10,29 +21,25 @@ function successResponse(array $data, array $messages, int $statusCode, array $e
     return response()->json($structure, $statusCode);
 }
 
-function errorResponse(int $statusCode = 404, array $errors = null, array $messages = null, array $data = null): \Illuminate\Http\JsonResponse
+/**
+ * @param int $statusCode
+ * @param array $errors
+ * @param array $messages
+ * @param array $data
+ * @return JsonResponse
+ * @noinspection PhpFunctionNamingConventionInspection
+ */
+function errorResponse(int $statusCode = 404, array $errors = [], array $messages = [], array $data = []): JsonResponse
 {
     if (empty($messages)) {
-        switch ($statusCode) {
-            case 400 :
-                $messages = 'خطا در ارسال اطلاعات';
-                break;
-            case 401 :
-                $messages = 'احراز هویت انجام نشده است.';
-                break;
-            case 403 :
-                $messages = 'مجوز دسترسی به این بخش را ندارید.';
-                break;
-            case 404 :
-                $messages = 'اطلاعات درخواستی موجود نیست';
-                break;
-            case 422 :
-                $messages = 'خطا در اطلاعات ورودی';
-                break;
-            case 500 :
-                $messages = 'خطای پیش بینی نشده';
-                break;
-        }
+        $messages = match ($statusCode) {
+            400 => 'خطا در ارسال اطلاعات',
+            401 => 'احراز هویت انجام نشده است.',
+            403 => 'مجوز دسترسی به این بخش را ندارید.',
+            404 => 'اطلاعات درخواستی موجود نیست',
+            422 => 'خطا در اطلاعات ورودی',
+            500 => 'خطای پیش بینی نشده',
+        };
     }
 
     $structure = [

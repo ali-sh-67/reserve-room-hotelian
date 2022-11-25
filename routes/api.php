@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ReserveController;
+use App\Http\Controllers\Api\RoomController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,12 +15,14 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::prefix('/auth')->group(function(){
-   Route::post('/register',[AuthController::class,'register'])->name('register');
-   Route::post('/login',[AuthController::class,'login'])->name('login');
-   Route::get('/logout',[AuthController::class,'logout'])->middleware('auth:api')->name('logout');
+Route::prefix('/auth')->group(function () {
+    Route::post('/register', [AuthController::class, 'register'])->name('register');
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth:api')->name('logout');
 });
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('rooms', [RoomController::class, 'showRooms'])->name('showRooms');
+
+Route::post('reserve/{id}', [ReserveController::class, 'reserve'])->middleware('auth:api')->name('reserve');
+
+Route::get('reserve/history', [ReserveController::class, 'history'])->middleware('auth:api')->name('reserveHistory');

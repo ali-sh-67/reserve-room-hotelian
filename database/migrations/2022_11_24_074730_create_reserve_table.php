@@ -12,14 +12,16 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('reserve', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->string('email')->nullable();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password')->nullable();
-            $table->rememberToken()->nullable();
             $table->timestamps();
+            $table->softDeletes();
+            $table->integer('user_id')->nullable();
+            $table->integer('room_id')->nullable();
+            $table->integer('price')->nullable();
+            $table->integer('breakfast')->nullable();
+            $table->dateTime('from_date')->nullable();
+            $table->dateTime('to_date')->nullable();
         });
     }
 
@@ -30,6 +32,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('reserve');
     }
 };

@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -52,7 +53,7 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $e)
     {
 
-        if ($e instanceof \Illuminate\Auth\AuthenticationException) {
+        if ($e instanceof AuthenticationException) {
             return errorResponse(401);
 
         }
@@ -60,13 +61,13 @@ class Handler extends ExceptionHandler
             return errorResponse($e->status, $e->validator->errors()->toArray());
         }
         if ($e instanceof RouteNotFoundException) {
-            return errorResponse(404);
+            return errorResponse($e->getCode(),[$e->getMessage()],['ادرس درخواستی موجود نیست.']);
         }
         if ($e instanceof NotFoundHttpException) {
             return errorResponse(404);
         }
         if ($e) {
-            return errorResponse(500, (array)$e->getMessage(), ['این بخش در حال بروزرسانی میباشد.']);
+            return errorResponse(500, (array)$e->getMessage(), ['خطای داخلی!!']);
         }
         return parent::render($request, $e);
     }
